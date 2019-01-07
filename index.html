@@ -1,0 +1,133 @@
+<style>
+*{
+	margin: 0;
+	padding: 0;
+}
+
+body{
+	background-color: black;
+}
+
+#tamanhow{
+	position: absolute;
+	top: 10;
+	right: 10;
+	z-index: 1;
+}
+
+#tamanhoy{
+	position: absolute;
+	top: 50;
+	right: 10;
+	z-index: 1;
+}
+#bloco{
+	background-color: #cecece;
+	display: inline-block;
+}
+
+#bloco div{
+	/*border:solid 1px black;*/
+	background-color: red;
+	/*width: 100;*/
+	/*height: 100;*/
+	display: inline-block;
+	float: left
+}
+
+
+#im{display: none}
+#all{
+	text-align:center;
+}
+</style>
+
+<div id="all">
+	<input type="range" id="tamanhow" min=2 max=20 value="8" step="2">
+
+	<div id="geral"><img id="im" src='skin.jpg'></div>
+
+	<div id="bloco"></div>
+</div>
+
+<script>
+	
+	window.onload=function(){
+		bloco.style.width = imgW = im.width
+		bloco.style.height = imgH = im.height
+
+		tamanhoQuadrado(6,6)
+
+		embaralhar()
+	}
+
+	function embaralhar(){
+		for(z=0;z<500;z++){
+			r = Math.floor(rand(0,bloco.childElementCount))
+			bloco.children[r].click()	
+
+		}
+	}
+
+	
+	tamanhow.onchange=function(){
+		tamanhoQuadrado(this.value,this.value)
+	}
+
+
+	imagemLink = "skin.jpg"
+	
+	function tamanhoQuadrado(q1,q2){
+
+		bloco.innerHTML = "<div></div>"
+
+		imgW = im.width
+		imgH = im.height
+		
+		bloco.innerHTML = "" 
+
+		tw = imgW/q1
+		th = imgH/q2
+
+		col = 0
+
+		for(i=0;i<q1;i++){
+			for(j=0;j<q2;j++){
+				bloco.innerHTML += "<div style='width:"+tw+"; height:"+th+"; background-image: url("+imagemLink+"); background-position: "+(tw*j*-1)+"px "+(th*i*-1)+"px' dragabble=false></div>"
+			}
+
+		}
+		embaralhar()
+
+	}
+
+	tamanhoQuadrado(6,6)
+
+	a = 0
+	k = []
+	bloco.onclick=function(e){
+		if(a==0){
+			k[0] = e.target
+			e.target.style.opacity = 0.5
+			aux = k[0]
+			a++
+		}else{
+			k[1] = e.target
+			k[0].style.opacity = 1
+			k[3] = k[1].getAttribute("style")
+			e.target.style = k[0].getAttribute("style")
+			k[0].setAttribute("style",k[3])
+			a--
+
+		}
+	}
+
+	function rand(min, max) {
+		return Math.random() * (max - min) + min;
+	}
+
+
+	
+
+
+</script>
