@@ -1,133 +1,90 @@
-<style>
-*{
-	margin: 0;
-	padding: 0;
-}
+<input type="text" id=txt placeholder="link da imagem" spellcheck="false"><br>
+<input type="text" id=txt2 placeholder="quantidade" spellcheck="false" value="6">
 
-body{
-	background-color: black;
-}
-
-#tamanhow{
-	position: absolute;
-	top: 10;
-	right: 10;
-	z-index: 1;
-}
-
-#tamanhoy{
-	position: absolute;
-	top: 50;
-	right: 10;
-	z-index: 1;
-}
-#bloco{
-	background-color: #cecece;
-	display: inline-block;
-}
-
-#bloco div{
-	/*border:solid 1px black;*/
-	background-color: red;
-	/*width: 100;*/
-	/*height: 100;*/
-	display: inline-block;
-	float: left
-}
-
-
-#im{display: none}
-#all{
-	text-align:center;
-}
-</style>
-
-<div id="all">
-	<input type="range" id="tamanhow" min=2 max=20 value="8" step="2">
-
-	<div id="geral"><img id="im" src='skin.jpg'></div>
-
-	<div id="bloco"></div>
-</div>
+<div id="bloco"></div>
 
 <script>
-	
-	window.onload=function(){
-		bloco.style.width = imgW = im.width
-		bloco.style.height = imgH = im.height
 
-		tamanhoQuadrado(6,6)
+	//https://i.imgur.com/6UXL7jp.jpg
+	txt.value = 'imgs/1.jpg'
+	txt.onkeyup=render
+	txt2.onkeyup=render
+	render()
 
-		embaralhar()
-	}
+	function render(){
 
-	function embaralhar(){
-		for(z=0;z<500;z++){
-			r = Math.floor(rand(0,bloco.childElementCount))
-			bloco.children[r].click()	
+		bloco.innerHTML = ''
+		document.head.innerHTML = ''
 
-		}
-	}
+		img = new Image()
 
-	
-	tamanhow.onchange=function(){
-		tamanhoQuadrado(this.value,this.value)
-	}
+		//img.src="https://i.imgur.com/6UXL7jp.jpg"
+		img.src= txt.value
+
+		img.onload=function(){
+
+			w = this.width
+			h = this.height
+
+			escala = 1200/w
+
+			q = parseInt(txt2.value)
+
+			dw = w*escala/q
+			dh = h*escala/q
+
+			bloco.style.width = w*escala
+			bloco.style.height = h*escala
+
+			s = document.createElement("style")
+			s.innerHTML = "#bloco div{width:"+dw+";height:"+dh+"; background-size:"+w+"px;background-image:url("+txt.value+");display:inline-block}"
+
+			s.innerHTML += "#bloco{position:relative;overflow:hidden;margin:auto}"
+			s.innerHTML += ".opacidade{opacity: 0.5}"
+			s.innerHTML += "body{background-Color:black}input{background-color:transparent;border:none;color:#555;outline:none}"
+			
 
 
-	imagemLink = "skin.jpg"
-	
-	function tamanhoQuadrado(q1,q2){
+			document.head.appendChild(s)
 
-		bloco.innerHTML = "<div></div>"
-
-		imgW = im.width
-		imgH = im.height
-		
-		bloco.innerHTML = "" 
-
-		tw = imgW/q1
-		th = imgH/q2
-
-		col = 0
-
-		for(i=0;i<q1;i++){
-			for(j=0;j<q2;j++){
-				bloco.innerHTML += "<div style='width:"+tw+"; height:"+th+"; background-image: url("+imagemLink+"); background-position: "+(tw*j*-1)+"px "+(th*i*-1)+"px' dragabble=false></div>"
+			for(i=0;i<q;i++){
+				for(j=0;j<q;j++){
+					bloco.innerHTML += "<div style='background-position:"+(j*dw*-1)+" "+(i*dh*-1)+" ;background-size:"+w*escala+"px'></div>"
+				}
 			}
 
-		}
-		embaralhar()
-
-	}
-
-	tamanhoQuadrado(6,6)
-
-	a = 0
-	k = []
-	bloco.onclick=function(e){
-		if(a==0){
-			k[0] = e.target
-			e.target.style.opacity = 0.5
-			aux = k[0]
-			a++
-		}else{
-			k[1] = e.target
-			k[0].style.opacity = 1
-			k[3] = k[1].getAttribute("style")
-			e.target.style = k[0].getAttribute("style")
-			k[0].setAttribute("style",k[3])
-			a--
+			setTimeout(embaralhar,2000)
 
 		}
+
+		a = 0
+		bloco.onclick=function(e){
+
+			if(a++%2==0){
+				b = e.target
+				aux = e.target.style.backgroundPosition
+				e.target.classList.toggle("opacidade")
+			}else{
+
+			//aux = e.target
+
+			b.style.backgroundPosition = e.target.style.backgroundPosition
+
+			e.target.style.backgroundPosition = aux
+			b.classList.toggle("opacidade")
+			//b.style.backgroundPosition = aux.style.backgroundPosition
+		}
+
 	}
 
-	function rand(min, max) {
-		return Math.random() * (max - min) + min;
+	//embaralhar
+	function embaralhar(){
+		for(i=0;i <= bloco.childElementCount+101 ; i++){
+			r = Math.floor(Math.random()*bloco.childElementCount)
+			bloco.children[r].click()
+		}
 	}
-
-
-	
+}
 
 
 </script>
