@@ -1,90 +1,163 @@
-<input type="text" id=txt placeholder="link da imagem" spellcheck="false"><br>
-<input type="text" id=txt2 placeholder="quantidade" spellcheck="false" value="6">
+<style>
+	body{background-color: black;text-align: center;}
+	*{transition: 0.5s}
+	.quadrado{
+		background-image:url("avatar_q.jpg");
+		width: 100;
+		height: 100;
+		position: absolute;	
+	}
 
-<div id="bloco"></div>
+	.bloco{
+		width: 1000;
+		height: 1000;
+		border:solid 1px black;
+		flex-wrap: wrap;
+		/*display: flex;*/
+		position: relative;
+		margin: auto;
+	}
+	.sobre{
+		z-index: 10
+		box-shadow: 0 0 10px white;
+	}
+
+	.up{
+		z-index: 50;
+		transform:translateZ(100px);
+		box-shadow: 0 0 10px red;
+	}
+	
+	.centro{
+		position: absolute;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		height: 100%;
+	}
+
+	button{
+		border:none;
+		color: white;
+		padding: 10;
+		outline: none;
+		background-color: black;
+	}
+</style>
+
+
+<button onclick="valor=0">Embaralhar</button>
+<br><br>
+
+<div class="bloco" id="bloco"></div>
+
 
 <script>
 
-	//https://i.imgur.com/6UXL7jp.jpg
-	txt.value = 'imgs/1.jpg'
-	txt.onkeyup=render
-	txt2.onkeyup=render
-	render()
 
-	function render(){
+	for(i=0;i<100;i++){
 
-		bloco.innerHTML = ''
-		document.head.innerHTML = ''
+		l = i%10
+		c = parseInt(i/10)
 
-		img = new Image()
+		lin = i*100*-1
+		col = parseInt(i/10)*100*-1
 
-		//img.src="https://i.imgur.com/6UXL7jp.jpg"
-		img.src= txt.value
+		div = document.createElement("div")
+		div.classList.add("quadrado")
+		div.id=`L${l}C${c}`
+		div.style.backgroundPosition=""+i*100*-1+"px "+col+"px"
+		div.style.left = l*100
+		div.style.top = c*100
+		bloco.appendChild(div)
+	}
 
-		img.onload=function(){
+	function swap(a,b){
 
-			w = this.width
-			h = this.height
+		tempL = a.style.left
+		tempT = a.style.top
 
-			escala = 1200/w
+		a.style.left = b.style.left
+		a.style.top = b.style.top
 
-			q = parseInt(txt2.value)
-
-			dw = w*escala/q
-			dh = h*escala/q
-
-			bloco.style.width = w*escala
-			bloco.style.height = h*escala
-
-			s = document.createElement("style")
-			s.innerHTML = "#bloco div{width:"+dw+";height:"+dh+"; background-size:"+w+"px;background-image:url("+txt.value+");display:inline-block}"
-
-			s.innerHTML += "#bloco{position:relative;overflow:hidden;margin:auto}"
-			s.innerHTML += ".opacidade{opacity: 0.5}"
-			s.innerHTML += "body{background-Color:black}input{background-color:transparent;border:none;color:#555;outline:none}"
-			
+		b.style.left = tempL
+		b.style.top = tempT
+	}
 
 
-			document.head.appendChild(s)
+	// embaralhar
+	function embaralhar(){
+		for(i=0;i<100;i++){
 
-			for(i=0;i<q;i++){
-				for(j=0;j<q;j++){
-					bloco.innerHTML += "<div style='background-position:"+(j*dw*-1)+" "+(i*dh*-1)+" ;background-size:"+w*escala+"px'></div>"
+			a1 = parseInt(Math.random()*10)
+			b1 = parseInt(Math.random()*10)
+
+			a2 = parseInt(Math.random()*10)
+			b2 = parseInt(Math.random()*10)
+
+			a = eval(`L${a1}C${b1}`)
+			b = eval(`L${a2}C${b2}`)
+
+			swap(a,b)		
+		}
+	}
+
+	function clicar(){
+		n = 0
+		m = []
+
+		for(i of document.querySelectorAll(".quadrado")){
+			i.onclick=function(){
+				if(n==0){
+					m.push(this)
+					m[0].classList.toggle("sobre")
+					m[0].classList.toggle("up")
+					n=1
+				}
+				else{
+
+					m.push(this)
+
+					m[0].classList.toggle("sobre")
+					m[1].classList.add("up")
+
+					swap(m[0],m[1])
+
+					setTimeout(()=>{
+						m[0].classList.remove("up")
+						m[1].classList.remove("up")
+						m=[]
+					},500)
+
+					n=0
+
 				}
 			}
-
-			setTimeout(embaralhar,2000)
-
-		}
-
-		a = 0
-		bloco.onclick=function(e){
-
-			if(a++%2==0){
-				b = e.target
-				aux = e.target.style.backgroundPosition
-				e.target.classList.toggle("opacidade")
-			}else{
-
-			//aux = e.target
-
-			b.style.backgroundPosition = e.target.style.backgroundPosition
-
-			e.target.style.backgroundPosition = aux
-			b.classList.toggle("opacidade")
-			//b.style.backgroundPosition = aux.style.backgroundPosition
-		}
-
-	}
-
-	//embaralhar
-	function embaralhar(){
-		for(i=0;i <= bloco.childElementCount+101 ; i++){
-			r = Math.floor(Math.random()*bloco.childElementCount)
-			bloco.children[r].click()
 		}
 	}
-}
 
 
+	// setTimeout(()=>{
+	// 	embaralhar()
+	// },1000)
+
+
+	valor = 500
+	setInterval(()=>{
+		if(valor < 100 ){
+			a1 = parseInt(Math.random()*10)
+			b1 = parseInt(Math.random()*10)
+
+			a2 = parseInt(Math.random()*10)
+			b2 = parseInt(Math.random()*10)
+
+			a = eval(`L${a1}C${b1}`)
+			b = eval(`L${a2}C${b2}`)
+
+			swap(a,b)
+			valor++	
+			clicar()
+		}
+	},0)
 </script>
