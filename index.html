@@ -1,6 +1,6 @@
 <style>
 	body{background-color: black;text-align: center;}
-	*{transition: 0.2s}
+	*{transition: 0.3s}
 	.quadrado{
 		background-image:url("avatar_q.jpg");
 		width: 100;
@@ -47,7 +47,8 @@
 </style>
 
 
-<button onclick="valor=0">Embaralhar</button>
+<button onclick="embaralhar();clicar()">Embaralhar</button>
+<button onclick="desembaralhar()">Desembaralhar</button>
 <br><br>
 
 <div class="bloco" id="bloco"></div>
@@ -55,6 +56,7 @@
 
 <script>
 
+	ordem = []
 
 	for(i=0;i<100;i++){
 
@@ -85,11 +87,25 @@
 		b.style.top = tempT
 	}
 
+	function swap2(a,b){
+
+		a = eval(a)
+		b = eval(b)
+
+		tempL = a.style.left
+		tempT = a.style.top
+
+		a.style.left = b.style.left
+		a.style.top = b.style.top
+
+		b.style.left = tempL
+		b.style.top = tempT
+	}
+
 
 	// embaralhar
 	function embaralhar(){
 		for(i=0;i<100;i++){
-
 			a1 = parseInt(Math.random()*10)
 			b1 = parseInt(Math.random()*10)
 
@@ -99,18 +115,64 @@
 			a = eval(`L${a1}C${b1}`)
 			b = eval(`L${a2}C${b2}`)
 
+			a.setAttribute("x",`${a1}`)
+			a.setAttribute("y",`${b1}`)
+
+			b.setAttribute("x",`${a2}`)
+			b.setAttribute("y",`${b2}`)
+
+			texto = a1+","+b1+" "+a2+","+b2
+
+			ordem.push(a.id+","+b.id)
+
 			swap(a,b)		
 		}
 	}
 
+	function troca(str){
+
+		el = str.split(" ")
+
+		A = el[0].split(",")[0]
+		B = el[0].split(",")[1]
+
+		C = el[1].split(",")[0]
+		D = el[1].split(",")[1]
+
+		t1 = eval(`L${A}C${B}`)
+		t2 = eval(`L${C}C${D}`)
+
+		swap(t1,t2)
+	}
+
+	function troca2(str){
+
+		el = str.split(",")
+
+		console.log(el)
+
+		a = eval(el[0])
+		b = eval(el[1])
+
+		swap(a,b)
+	}
+
+
 	function clicar(){
 		n = 0
 		m = []
+		k = []
 
 		for(i of document.querySelectorAll(".quadrado")){
 			i.onclick=function(){
 				if(n==0){
+
 					m.push(this)
+
+					console.log(this)
+
+					k.push(this.id)
+					
 					m[0].classList.toggle("sobre")
 					m[0].classList.toggle("up")
 					n=1
@@ -119,7 +181,12 @@
 					m[0].classList.remove("sobre")
 					m.push(this)
 
-					// m[0].classList.toggle("sobre")
+					k.push(this.id)
+					
+					k = k.join(",")
+
+					ordem.push(k)
+
 					m[1].classList.add("up")
 
 					swap(m[0],m[1])
@@ -131,33 +198,57 @@
 					},200)
 
 					n=0
-
+					k = []
 				}
 			}
 		}
 	}
 
+	num = false
+	function desembaralhar(){
+		num = true
+	}
+
+	setInterval(()=>{
+		if(num){
+			troca2(ordem.pop())
+
+			if(ordem.length == 0)
+				num=false
+		}
+	},50)
 
 	// setTimeout(()=>{
 	// 	embaralhar()
 	// },1000)
 
 
-	valor = 500
+	// valor = 500
+	// setInterval(()=>{
+
+	// 	if(valor < 100 ){
+	// 		a1 = parseInt(Math.random()*10)
+	// 		b1 = parseInt(Math.random()*10)
+
+	// 		a2 = parseInt(Math.random()*10)
+	// 		b2 = parseInt(Math.random()*10)
+
+	// 		a = eval(`L${a1}C${b1}`)
+	// 		b = eval(`L${a2}C${b2}`)
+
+	// 		texto = a1+","+b1+" "+a2+","+b2
+	// 		console.log(texto)
+	// 		ordem.push(texto)
+
+	// 		swap(a,b)
+	// 		valor++	
+	// 		clicar()
+	// 	}
+	// },0)
+
 	setInterval(()=>{
-		if(valor < 100 ){
-			a1 = parseInt(Math.random()*10)
-			b1 = parseInt(Math.random()*10)
 
-			a2 = parseInt(Math.random()*10)
-			b2 = parseInt(Math.random()*10)
-
-			a = eval(`L${a1}C${b1}`)
-			b = eval(`L${a2}C${b2}`)
-
-			swap(a,b)
-			valor++	
-			clicar()
-		}
 	},0)
+
+
 </script>
