@@ -1,6 +1,6 @@
 <style>
 	body{background-color: black;text-align: center;}
-	*{transition: 0.5s}
+	*{transition: 0.2s}
 	.quadrado{
 		background-image:url("avatar_q.jpg");
 		width: 100;
@@ -25,7 +25,7 @@
 	.up{
 		z-index: 50;
 		transform:translateZ(100px);
-		box-shadow: 0 0 10px red;
+		/*box-shadow: 0 0 10px red;*/
 	}
 	
 	.centro{
@@ -116,10 +116,10 @@
 					n=1
 				}
 				else{
-
+					m[0].classList.remove("sobre")
 					m.push(this)
 
-					m[0].classList.toggle("sobre")
+					// m[0].classList.toggle("sobre")
 					m[1].classList.add("up")
 
 					swap(m[0],m[1])
@@ -128,7 +128,7 @@
 						m[0].classList.remove("up")
 						m[1].classList.remove("up")
 						m=[]
-					},500)
+					},200)
 
 					n=0
 
